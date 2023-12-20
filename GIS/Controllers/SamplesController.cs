@@ -1,4 +1,5 @@
 ﻿using GIS.Models;
+using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
 using GIS.ViewModels.Sample;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +27,12 @@ namespace GIS.Controllers
         [HttpGet("{id}", Name = "Get")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await _sampleService.ReadByIdAsync(id));
+            var result = await _sampleService.ReadByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         // POST: api/Samples
