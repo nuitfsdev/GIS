@@ -8,6 +8,8 @@ namespace GIS.Services
         public static void Excecute(this IServiceCollection services)
         {
             services.AddScoped<ISampleService, SampleService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IMaterialService, MaterialService>();
         }
     }
 }

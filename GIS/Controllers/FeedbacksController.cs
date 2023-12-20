@@ -1,5 +1,7 @@
 ﻿using GIS.Database;
 using GIS.Models;
+using GIS.Services.ImplementServices;
+using GIS.Services.InterfaceServices;
 using GIS.ViewModels.Feedback;
 using GIS.ViewModels.Sample;
 using Microsoft.AspNetCore.Http;
@@ -11,22 +13,25 @@ namespace GIS.Controllers
     [ApiController]
     public class FeedbacksController : ControllerBase
     {
-        private readonly DatabaseContext _db;
-        public FeedbacksController(DatabaseContext db) {
-            _db = db;
+        private readonly IFeedbackService _feedbackService;
+        public FeedbacksController(IFeedbackService feedbackService) {
+            _feedbackService = feedbackService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = _db.Feedbacks.ToList();
-            return Ok(result);
+            return Ok(await _feedbackService.ReadAllAsync(e => true));
         }
 
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _db.Feedbacks.FindAsync(id);
+            var result = await _feedbackService.ReadByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -40,17 +45,14 @@ namespace GIS.Controllers
                 Sdt = addFeedback.Sdt,
                 Message = addFeedback.Message
             };
-            await _db.Feedbacks.AddAsync(fb);
-            await _db.SaveChangesAsync();
-
-            return Ok(fb);
+            return Ok(await _feedbackService.CreateAsync(fb));
         }
 
         
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] AddFeedback updateFeedback)
         {
-            Feedback? fb = await _db.Feedbacks.FindAsync(id);
+            Feedback? fb = await _feedbackService.ReadByIdAsync(id);
             if (fb == null)
             {
                 return NotFound();
@@ -60,25 +62,20 @@ namespace GIS.Controllers
             fb.Sdt = updateFeedback.Sdt;
             fb.Message = updateFeedback.Message;
 
-            await _db.SaveChangesAsync();
-
-            return Ok(fb);
+            return Ok(await _feedbackService.UpdateAsync(fb));
         }
 
         
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Feedback? fb = await _db.Feedbacks.FindAsync(id);
-            if (fb == null)
+            bool isDelete = await _feedbackService.DeleteAsync(id);
+            if (!isDelete)
             {
                 return NotFound();
             }
 
-            _db.Feedbacks.Remove(fb);
-            await _db.SaveChangesAsync();
-
-            return Ok(fb);
+            return Ok(isDelete);
         }
     }
 }
