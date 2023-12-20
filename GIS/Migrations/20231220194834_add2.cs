@@ -4,7 +4,7 @@
 
 namespace GIS.Migrations
 {
-    public partial class updateSample : Migration
+    public partial class add2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
