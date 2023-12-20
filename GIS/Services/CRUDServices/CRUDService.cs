@@ -36,12 +36,12 @@ namespace GIS.Services.CRUDServices
             return true;
         }
 
-        public async Task<IEnumerable<T>> ReadAllAsync()
+        public async Task< IEnumerable<T>> ReadAllAsync(Func<T, bool> expression)
         {
-            return await _entities.ToListAsync();   
+            return _entities.Where(expression).AsEnumerable();
         }
 
-        public async Task<T?> ReadAsync(Guid id)
+        public async Task<T?> ReadByIdAsync(Guid id)
         {
             return await _entities.FindAsync(id);
         }

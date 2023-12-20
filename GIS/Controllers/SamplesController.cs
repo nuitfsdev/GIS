@@ -19,14 +19,14 @@ namespace GIS.Controllers
         [HttpGet]
         public  async Task<IActionResult> Get()
         {
-            return Ok(await _sampleService.ReadAllAsync());
+            return Ok(await _sampleService.ReadAllAsync(e=>true));
         }
 
         // GET: api/Samples/5
         [HttpGet("{id}", Name = "Get")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await _sampleService.ReadAsync(id));
+            return Ok(await _sampleService.ReadByIdAsync(id));
         }
 
         // POST: api/Samples
@@ -45,7 +45,7 @@ namespace GIS.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] AddSample updateSample)
         {
-            Sample? sample = await _sampleService.ReadAsync(id);
+            Sample? sample = await _sampleService.ReadByIdAsync(id);
             if(sample == null)
             {
                 return NotFound();
@@ -59,7 +59,7 @@ namespace GIS.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Sample? sample = await _sampleService.ReadAsync(id);
+            Sample? sample = await _sampleService.ReadByIdAsync(id);
             if(sample == null)
             {
                    return NotFound();

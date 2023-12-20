@@ -6,9 +6,9 @@ namespace GIS.Services.CRUDServices
     {
         Task<T> CreateAsync(T model);
 
-        Task<T?> ReadAsync(Guid id);
+        Task<T?> ReadByIdAsync(Guid id);
 
-        Task<IEnumerable<T>> ReadAllAsync();
+        Task<IEnumerable<T>> ReadAllAsync(Func<T, bool> expression);
 
         Task<T> UpdateAsync(T model);
 
