@@ -11,11 +11,14 @@ namespace GIS.Database
         }
 
         public DbSet<Sample> Samples { get; set; } = null!;
-
+        public DbSet<Feedback> Feedbacks { get; set; } = null!; 
+        public DbSet<Feedback> Materials { get; set; } = null!; 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Sample>().HasKey(x => x.Id);
+            modelBuilder.Entity<Feedback>().HasKey(x => x.Id); 
+            modelBuilder.Entity<Material>().HasKey(x => x.Id);
         }
     }
 }
