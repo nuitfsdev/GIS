@@ -17,7 +17,10 @@ namespace GIS.Database
         public DbSet<IdentityUserRole<Guid>> IdentityUserRoles { get; set; } = null!;
 
         public DbSet<Feedback> Feedbacks { get; set; } = null!; 
-        public DbSet<Feedback> Materials { get; set; } = null!; 
+        public DbSet<Material> Materials { get; set; } = null!; 
+        public DbSet<Body> Body { get; set; } = null!;
+        public DbSet<BodyComp> BodyComp { get; set; } = null!;
+        public DbSet<Prism> Prism { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,6 +33,9 @@ namespace GIS.Database
             //modelBuilder.Entity<AccountRole>().HasKey(x => new { x.UserId, x.RoleId });
             modelBuilder.Entity<Feedback>().HasKey(x => x.Id); 
             modelBuilder.Entity<Material>().HasKey(x => x.Id);
+            modelBuilder.Entity<Body>().ToTable("Body").HasKey(x => x.Id);
+            modelBuilder.Entity<BodyComp>().ToTable("BodyComp");
+            modelBuilder.Entity<Prism>().ToTable("Prism");
         }
     }
 }
