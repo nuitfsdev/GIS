@@ -3,6 +3,7 @@ using System;
 using GIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GIS.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231221132145_add3")]
+    partial class add3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,43 +82,7 @@ namespace GIS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.ToTable("Accounts");
-                });
-
-            modelBuilder.Entity("GIS.Models.Body", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Body", (string)null);
                 });
 
             modelBuilder.Entity("GIS.Models.Feedback", b =>
@@ -149,7 +115,7 @@ namespace GIS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("GIS.Models.Material", b =>
@@ -177,7 +143,7 @@ namespace GIS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Material");
                 });
 
             modelBuilder.Entity("GIS.Models.Role", b =>
@@ -236,44 +202,6 @@ namespace GIS.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("IdentityUserRoles");
-                });
-
-            modelBuilder.Entity("GIS.Models.BodyComp", b =>
-                {
-                    b.HasBaseType("GIS.Models.Body");
-
-                    b.Property<double>("width")
-                        .HasColumnType("double precision");
-
-                    b.ToTable("BodyComp", (string)null);
-                });
-
-            modelBuilder.Entity("GIS.Models.Prism", b =>
-                {
-                    b.HasBaseType("GIS.Models.Body");
-
-                    b.Property<double>("Height")
-                        .HasColumnType("double precision");
-
-                    b.ToTable("Prism", (string)null);
-                });
-
-            modelBuilder.Entity("GIS.Models.BodyComp", b =>
-                {
-                    b.HasOne("GIS.Models.Body", null)
-                        .WithOne()
-                        .HasForeignKey("GIS.Models.BodyComp", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GIS.Models.Prism", b =>
-                {
-                    b.HasOne("GIS.Models.Body", null)
-                        .WithOne()
-                        .HasForeignKey("GIS.Models.Prism", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

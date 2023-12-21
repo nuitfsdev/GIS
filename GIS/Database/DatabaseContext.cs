@@ -26,6 +26,7 @@ namespace GIS.Database
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Sample>().HasKey(x => x.Id);
             modelBuilder.Entity<Account>().HasKey(x => x.Id);
+            modelBuilder.Entity<Account>().HasIndex(x => x.Email).IsUnique();
             modelBuilder.Entity<Role>().HasKey(x => x.Id);
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasKey(x => new { x.UserId, x.RoleId });
             //modelBuilder.Entity<AccountRole>().HasOne(x => x.Account).WithMany(x => x.AccountRoles).HasForeignKey(x => x.UserId);
