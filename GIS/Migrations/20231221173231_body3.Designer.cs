@@ -3,6 +3,7 @@ using System;
 using GIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GIS.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231221173231_body3")]
+    partial class body3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,9 +82,6 @@ namespace GIS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.ToTable("Accounts");
                 });
 
@@ -98,6 +97,10 @@ namespace GIS.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -116,7 +119,9 @@ namespace GIS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Body", (string)null);
+                    b.ToTable("Body");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Body");
                 });
 
             modelBuilder.Entity("GIS.Models.Feedback", b =>
@@ -245,7 +250,7 @@ namespace GIS.Migrations
                     b.Property<double>("width")
                         .HasColumnType("double precision");
 
-                    b.ToTable("BodyComp", (string)null);
+                    b.HasDiscriminator().HasValue("BodyComp");
                 });
 
             modelBuilder.Entity("GIS.Models.Prism", b =>
@@ -255,25 +260,7 @@ namespace GIS.Migrations
                     b.Property<double>("Height")
                         .HasColumnType("double precision");
 
-                    b.ToTable("Prism", (string)null);
-                });
-
-            modelBuilder.Entity("GIS.Models.BodyComp", b =>
-                {
-                    b.HasOne("GIS.Models.Body", null)
-                        .WithOne()
-                        .HasForeignKey("GIS.Models.BodyComp", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GIS.Models.Prism", b =>
-                {
-                    b.HasOne("GIS.Models.Body", null)
-                        .WithOne()
-                        .HasForeignKey("GIS.Models.Prism", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasDiscriminator().HasValue("Prism");
                 });
 #pragma warning restore 612, 618
         }

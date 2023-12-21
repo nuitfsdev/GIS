@@ -10,6 +10,7 @@ namespace GIS.Services
             services.AddScoped<ISampleService, SampleService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IMaterialService, MaterialService>();
+            services.AddScoped<IPrismService, PrismService>();
         }
     }
 }
