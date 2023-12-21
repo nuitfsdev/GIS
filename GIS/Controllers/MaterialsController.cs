@@ -40,6 +40,7 @@ namespace GIS.Controllers
             Material material = new()
             {
                 Name = addMaterial.Name,
+                Age = addMaterial.Age,
                 Description = addMaterial.Description
             };
             return Ok(await _materialService.CreateAsync(material));
