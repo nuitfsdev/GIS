@@ -2,6 +2,7 @@
 using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
 using GIS.ViewModels.Sample;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace GIS.Controllers
         }
         // GET: api/Samples
         [HttpGet]
+        [Authorize(Roles = "USER")]
         public  async Task<IActionResult> Get()
         {
             return Ok(await _sampleService.ReadAllAsync(e=>true));
@@ -25,6 +27,7 @@ namespace GIS.Controllers
 
         // GET: api/Samples/5
         [HttpGet("{id}", Name = "Get")]
+        [Authorize(Roles = "USER,ADMIN")]
         public async Task<IActionResult> Get(Guid id)
         {
             var result = await _sampleService.ReadByIdAsync(id);
