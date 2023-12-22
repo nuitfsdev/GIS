@@ -22,6 +22,8 @@ namespace GIS.Database
         public DbSet<BodyComp> BodyComp { get; set; } = null!;
         public DbSet<Prism> Prism { get; set; } = null!;
         public DbSet<DamageReport> DamageReports { get; set; } = null!;
+
+        public DbSet<Notification> Notifications { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,6 +32,7 @@ namespace GIS.Database
             modelBuilder.Entity<Account>().HasIndex(x => x.Email).IsUnique();
             modelBuilder.Entity<Role>().HasKey(x => x.Id);
             modelBuilder.Entity<DamageReport>().HasKey(x => x.Id);
+            modelBuilder.Entity<Notification>().HasKey(x => x.Id);
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasKey(x => new { x.UserId, x.RoleId });
             //modelBuilder.Entity<AccountRole>().HasOne(x => x.Account).WithMany(x => x.AccountRoles).HasForeignKey(x => x.UserId);
             //modelBuilder.Entity<AccountRole>().HasOne(x => x.Role).WithMany(x => x.AccountRoles).HasForeignKey(x => x.RoleId);
