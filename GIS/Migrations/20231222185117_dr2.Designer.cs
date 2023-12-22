@@ -3,6 +3,7 @@ using System;
 using GIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GIS.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231222185117_dr2")]
+    partial class dr2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,36 +119,6 @@ namespace GIS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Body", (string)null);
-                });
-
-            modelBuilder.Entity("GIS.Models.BodyMaterial", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("AgeStartTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("BodyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("MaterialId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BodyId");
-
-                    b.HasIndex("MaterialId");
-
-                    b.ToTable("BodyMaterial");
                 });
 
             modelBuilder.Entity("GIS.Models.DamageReport", b =>
@@ -355,25 +327,6 @@ namespace GIS.Migrations
                     b.ToTable("Prism", (string)null);
                 });
 
-            modelBuilder.Entity("GIS.Models.BodyMaterial", b =>
-                {
-                    b.HasOne("GIS.Models.Body", "Body")
-                        .WithMany("BodyMaterial")
-                        .HasForeignKey("BodyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GIS.Models.Material", "Material")
-                        .WithMany("BodyMaterial")
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Body");
-
-                    b.Navigation("Material");
-                });
-
             modelBuilder.Entity("GIS.Models.DamageReport", b =>
                 {
                     b.HasOne("GIS.Models.Account", "Account")
@@ -418,14 +371,7 @@ namespace GIS.Migrations
 
             modelBuilder.Entity("GIS.Models.Body", b =>
                 {
-                    b.Navigation("BodyMaterial");
-
                     b.Navigation("DamageReports");
-                });
-
-            modelBuilder.Entity("GIS.Models.Material", b =>
-                {
-                    b.Navigation("BodyMaterial");
                 });
 #pragma warning restore 612, 618
         }

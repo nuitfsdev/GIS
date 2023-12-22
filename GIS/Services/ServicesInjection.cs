@@ -12,6 +12,8 @@ namespace GIS.Services
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IMaterialService, MaterialService>();
             services.AddScoped<IPrismService, PrismService>();
+            services.AddScoped<IDamageReportService, DamageReportService>();
+            services.AddScoped<IBodyMaterialService, BodyMaterialService>();
         }
     }
 }

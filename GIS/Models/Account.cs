@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 
 namespace GIS.Models
 {
@@ -6,6 +7,6 @@ namespace GIS.Models
     {
       public string Name { get; set; } = string.Empty;
       public string Phone { get; set; } = string.Empty;
-      public List<DamageReport> DamageReports { get; set; }
+      public ICollection<DamageReport> DamageReports { get; } = new List<DamageReport>();
     }
 }

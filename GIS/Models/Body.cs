@@ -10,6 +10,7 @@ namespace GIS.Models
         public string Path { get; set; } = string.Empty;
         public string Color { get; set; } = string.Empty;
         public string Status { get; set; } = "Vẫn còn tốt";
-        public List<DamageReport> DamageReports { get; set; }
+        public ICollection<DamageReport> DamageReports { get; } = new List<DamageReport>();
+        public ICollection<BodyMaterial> BodyMaterial {  get; } = new List<BodyMaterial>();
     }
 }

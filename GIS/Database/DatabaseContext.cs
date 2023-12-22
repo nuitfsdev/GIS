@@ -24,6 +24,8 @@ namespace GIS.Database
         public DbSet<DamageReport> DamageReports { get; set; } = null!;
 
         public DbSet<Notification> Notifications { get; set; } = null!;
+
+        public DbSet<BodyMaterial> BodyMaterial { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,13 +39,14 @@ namespace GIS.Database
             //modelBuilder.Entity<AccountRole>().HasOne(x => x.Account).WithMany(x => x.AccountRoles).HasForeignKey(x => x.UserId);
             //modelBuilder.Entity<AccountRole>().HasOne(x => x.Role).WithMany(x => x.AccountRoles).HasForeignKey(x => x.RoleId);
             //modelBuilder.Entity<AccountRole>().HasKey(x => new { x.UserId, x.RoleId });
-            modelBuilder.Entity<DamageReport>().HasOne(dr => dr.Bodys).WithMany(b => b.DamageReports).HasForeignKey(dr => dr.Id);
-            modelBuilder.Entity<DamageReport>().HasOne(dr => dr.Accounts).WithMany(b => b.DamageReports).HasForeignKey(dr => dr.Id);
+            modelBuilder.Entity<DamageReport>().HasOne(dr => dr.Body).WithMany(b => b.DamageReports).HasForeignKey(dr => dr.BodyId);
+            modelBuilder.Entity<DamageReport>().HasOne(dr => dr.Account).WithMany(b => b.DamageReports).HasForeignKey(dr => dr.AccountId);
             modelBuilder.Entity<Feedback>().HasKey(x => x.Id); 
             modelBuilder.Entity<Material>().HasKey(x => x.Id);
             modelBuilder.Entity<Body>().ToTable("Body").HasKey(x => x.Id);
             modelBuilder.Entity<BodyComp>().ToTable("BodyComp");
             modelBuilder.Entity<Prism>().ToTable("Prism");
+            modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Body);
         }
     }
 }
