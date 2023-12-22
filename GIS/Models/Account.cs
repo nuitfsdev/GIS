@@ -6,6 +6,6 @@ namespace GIS.Models
     {
       public string Name { get; set; } = string.Empty;
       public string Phone { get; set; } = string.Empty;
-
+      public List<DamageReport> DamageReports { get; set; }
     }
 }
