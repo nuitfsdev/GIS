@@ -46,7 +46,10 @@ namespace GIS.Database
             modelBuilder.Entity<Body>().ToTable("Body").HasKey(x => x.Id);
             modelBuilder.Entity<BodyComp>().ToTable("BodyComp");
             modelBuilder.Entity<Prism>().ToTable("Prism");
-            modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Body);
+            modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Body).WithMany(x => x.BodyMaterial).HasForeignKey(x => x.BodyId);
+            modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Material).WithMany(x => x.BodyMaterial).HasForeignKey(x => x.MaterialId);
+            modelBuilder.Entity<BodyMaterial>().HasKey(x => new { x.BodyId, x.MaterialId });
+
         }
     }
 }
