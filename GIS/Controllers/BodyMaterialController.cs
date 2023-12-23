@@ -2,6 +2,7 @@
 using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
 using GIS.ViewModels.BodyMaterial;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GIS.Controllers
@@ -15,6 +16,18 @@ namespace GIS.Controllers
         public BodyMaterialController(IBodyMaterialService bodyMaterialService)
         {
             _bodyMaterialService = bodyMaterialService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _bodyMaterialService.ReadAllAsync(e => true));
+        }
+
+        [HttpGet("findOne")]
+        public async Task<IActionResult> GetBy2Id(Guid BodyId, Guid MaterialId)
+        {
+            return Ok(await _bodyMaterialService.FindBy2Id(BodyId, MaterialId));
         }
 
         [HttpPost]
@@ -45,15 +58,13 @@ namespace GIS.Controllers
             return Ok(await _bodyMaterialService.CreateAsync(bodyMaterial));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] Guid BodyId, [FromQuery] Guid MaterialId)
         {
-            BodyMaterial? sample = await _bodyMaterialService.ReadByIdAsync(id);
-            if (sample == null)
-            {
+            var result = await _bodyMaterialService.DeleteBmBy2Id(BodyId, MaterialId);
+            if (result == false)
                 return NotFound();
-            }
-            return Ok(await _bodyMaterialService.DeleteAsync(id));
+            return Ok(result);
         }
     }
 }
