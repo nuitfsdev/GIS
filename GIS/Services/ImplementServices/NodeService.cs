@@ -5,9 +5,9 @@ using GIS.Services.InterfaceServices;
 
 namespace GIS.Services.ImplementServices
 {
-    public class BodyMaterialService : CRUDService<BodyMaterial>, IBodyMaterialService
+    public class NodeService : CRUDService<Node>, INodeService
     {
-        public BodyMaterialService(DatabaseContext context) : base(context)
+        public NodeService(DatabaseContext context) : base(context)
         {
         }
     }

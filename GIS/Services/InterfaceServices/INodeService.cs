@@ -3,7 +3,7 @@ using GIS.Services.CRUDServices;
 
 namespace GIS.Services.InterfaceServices
 {
-    public interface IBodyMaterialService : ICRUDService<BodyMaterial>
+    public interface INodeService : ICRUDService<Node>
     {
     }
 }

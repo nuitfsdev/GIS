@@ -2,7 +2,7 @@
 
 namespace GIS.ViewModels.Body
 {
-    public class AddBody
+    public class AddBodyComp
     {
         [Required]
         public string Name { get; set; } = string.Empty;
@@ -10,7 +10,7 @@ namespace GIS.ViewModels.Body
         public string Path { get; set; } = string.Empty;
         [Required]
         public string Color { get; set; } = string.Empty;
-        public double Height { get; set; }
+        [Required]
         public double Width { get; set; }
     }
 }
