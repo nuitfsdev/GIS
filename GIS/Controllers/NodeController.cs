@@ -108,7 +108,7 @@ namespace GIS.Controllers
             }
             else
             {
-                Console.WriteLine("null thiệt à vl");
+                Console.WriteLine("null");
             }
 
             return Ok("Success");
@@ -145,7 +145,7 @@ namespace GIS.Controllers
         [HttpDelete("coordinates")]
         public async Task<IActionResult> DeleteByCoordinates([FromBody] Coordinates a)
         {
-            List<Node> nodeList = (List<Node>)await _nodeService.ReadAllAsync(e => true);
+            IEnumerable<Node> nodeList = await _nodeService.ReadAllAsync(e => true);
 
             var filteredNodes = nodeList.Where(node =>
                                 node.X == 1 &&
