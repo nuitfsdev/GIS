@@ -74,7 +74,16 @@ namespace GIS.Controllers
             {
                 return NotFound();
             }
-            return Ok(_bodyMaterialService.DeleteBodyMaterial(bodyId, materialId));
+            bool deleteResult = await _bodyMaterialService.DeleteBodyMaterial(bodyId, materialId);
+            Console.WriteLine("deleteResult");
+            Console.WriteLine(deleteResult);
+            if (deleteResult)
+            {
+                return Ok("Success");
+            }
+
+            // Xử lý trường hợp lỗi nếu cần thiết
+            return StatusCode(500, "Internal Server Error");
         }
     }
 }

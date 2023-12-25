@@ -15,5 +15,6 @@ namespace GIS.Models
         public Body Body{ get; set; }
         public Guid AccountId { get; set; }
         public Account Account { get; set; }
+        public BodyRepairStatus BodyRepairStatus { get; set; }  
     }
 }

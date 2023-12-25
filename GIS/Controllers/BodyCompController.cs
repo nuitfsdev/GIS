@@ -1,4 +1,5 @@
 ﻿using GIS.Models;
+using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
 using GIS.ViewModels.Body;
 using GIS.ViewModels.FaceNode;
@@ -8,20 +9,20 @@ namespace GIS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PrismController : ControllerBase
+    public class BodyCompController : ControllerBase
     {
-        private readonly IPrismService _prismService;
+        private readonly IBodyCompService _bodyCompService;
         private readonly IFaceNodeService _faceNodeService;
         private readonly IFaceService _faceService;
         private readonly INodeService _nodeService;
         private readonly IBodyMaterialService _bodyMaterialService;
         private readonly IMaterialService _materialService;
 
-        public PrismController(IPrismService prismService,IFaceNodeService faceNodeService, 
-            IFaceService faceService, INodeService nodeService, IBodyMaterialService bodyMaterialService, 
+        public BodyCompController(IBodyCompService bodyCompService, IFaceNodeService faceNodeService,
+            IFaceService faceService, INodeService nodeService, IBodyMaterialService bodyMaterialService,
             IMaterialService materialService)
         {
-            _prismService = prismService;
+            _bodyCompService = bodyCompService;
             _faceNodeService = faceNodeService;
             _faceService = faceService;
             _nodeService = nodeService;
@@ -32,13 +33,13 @@ namespace GIS.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _prismService.ReadAllAsync(e => true));
+            return Ok(await _bodyCompService.ReadAllAsync(e => true));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var result = await _prismService.ReadByIdAsync(id);
+            var result = await _bodyCompService.ReadByIdAsync(id);
             if (result == null)
             {
                 return NotFound();
@@ -47,54 +48,54 @@ namespace GIS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AddPrism addPrism)
+        public async Task<IActionResult> Post([FromBody] AddBodyComp addBodyComp)
         {
-            Prism prism = new()
+            BodyComp bodyComp = new()
             {
-                Name = addPrism.Name,
-                Path = addPrism.Path,
-                Color = addPrism.Color,
-                Height = addPrism.Height
+                Name = addBodyComp.Name,
+                Path = addBodyComp.Path,
+                Color = addBodyComp.Color,
+                Width = addBodyComp.Width
             };
-            return Ok(await _prismService.CreateAsync(prism));
+            return Ok(await _bodyCompService.CreateAsync(bodyComp));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Prism? prism = await _prismService.ReadByIdAsync(id);
+            BodyComp? bodyComp = await _bodyCompService.ReadByIdAsync(id);
 
-            if (prism == null)
+            if (bodyComp == null)
             {
                 return NotFound();
             }
-            return Ok(await _prismService.DeleteAsync(id));
+            return Ok(await _bodyCompService.DeleteAsync(id));
         }
 
         [HttpPut("path")]
-        public async Task<IActionResult> Put([FromQuery] string path, [FromBody] AddPrism updatePrism)
+        public async Task<IActionResult> Put([FromQuery] string path, [FromBody] AddBodyComp updateBodyComp)
         {
-            IEnumerable<Prism> prisms = await _prismService.ReadAllAsync(e => true);
-            Prism? foundPrism = prisms.FirstOrDefault(prism => prism.Path == path);
+            IEnumerable<BodyComp> bodyComps = await _bodyCompService.ReadAllAsync(e => true);
+            BodyComp? foundBodyComp = bodyComps.FirstOrDefault(bodyComp => bodyComp.Path == path);
 
-            if (foundPrism == null)
+            if (foundBodyComp == null)
             {
                 return NotFound();
             }
             else
             {
-                foundPrism.Name = updatePrism.Name;
-                foundPrism.Path = updatePrism.Path;
-                foundPrism.Color = updatePrism.Color;
-                foundPrism.Height = updatePrism.Height;
+                foundBodyComp.Name = updateBodyComp.Name;
+                foundBodyComp.Path = updateBodyComp.Path;
+                foundBodyComp.Color = updateBodyComp.Color;
+                foundBodyComp.Width = updateBodyComp.Width;
             }
-            return Ok(await _prismService.UpdateAsync(foundPrism));
+            return Ok(await _bodyCompService.UpdateAsync(foundBodyComp));
         }
 
         [HttpGet("path")]
         public async Task<IActionResult> GetGeojsonObject([FromQuery] string path)
         {
-            IEnumerable<Prism> prisms = await _prismService.ReadAllAsync(e => true);
+            IEnumerable<BodyComp> bodyComps = await _bodyCompService.ReadAllAsync(e => true);
             IEnumerable<Face> faces = await _faceService.ReadAllAsync(e => true);
             IEnumerable<FaceNode> faceNodes = await _faceNodeService.ReadAllAsync(e => true);
             IEnumerable<Node> nodes = await _nodeService.ReadAllAsync(e => true);
@@ -106,22 +107,22 @@ namespace GIS.Controllers
             string result = path.Trim().Substring(0, lastIndexOfExtension);
             Console.WriteLine(result);
 
-            var filteredPrisms = prisms.Where(prism =>
-                                prism.Path == path
+            var filteredBodyComps = bodyComps.Where(bodyComp =>
+                                bodyComp.Path == path
                             ).ToList();
 
-            if (filteredPrisms.Count() == 0)
+            if (filteredBodyComps.Count() == 0)
             {
                 return NotFound("This path is not exist!");
             }
 
-            var bodyMaterial = bodyMaterials.FirstOrDefault(x => x.BodyId == filteredPrisms[0].Id);
+            var bodyMaterial = bodyMaterials.FirstOrDefault(x => x.BodyId == filteredBodyComps[0].Id);
             Material material = new Material();
             if (bodyMaterial != null)
             {
                 Console.WriteLine(bodyMaterial.Id);
                 material = materials.First(x => x.Id == bodyMaterial.MaterialId);
-            }             
+            }
 
             var filteredFace = faces.Where(face =>
                                 face.Path.StartsWith(result)
@@ -171,12 +172,12 @@ namespace GIS.Controllers
             {
                 Properties =
                     {
-                        BuildingName = filteredPrisms[0].Name,
-                        Path = filteredPrisms[0].Path,
-                        Color = filteredPrisms[0].Color,
-                        Height = filteredPrisms[0].Height,
+                        BuildingName = filteredBodyComps[0].Name,
+                        Path = filteredBodyComps[0].Path,
+                        Color = filteredBodyComps[0].Color,
+                        Width = filteredBodyComps[0].Width,
                         Material = material.Name,
-                        Id = filteredPrisms[0].Id
+                        Id = filteredBodyComps[0].Id
                     },
                 Geometry =
                     {
