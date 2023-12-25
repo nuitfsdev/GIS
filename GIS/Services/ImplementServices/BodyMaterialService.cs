@@ -21,12 +21,12 @@ namespace GIS.Services.ImplementServices
             BodyMaterial bodyMaterial = await _entities.FirstAsync(x => x.BodyId == bodyId && x.MaterialId == materialId);
             Console.WriteLine("body Id");
             Console.WriteLine(bodyMaterial.BodyId);
-            //if(bodyMaterial != null)
-            //{
-            //    var result = _entities.Remove(bodyMaterial);
-            //    await _context.SaveChangesAsync();
-            //    return true;
-            //}
+            if (bodyMaterial != null)
+            {
+                var result = _entities.Remove(bodyMaterial);
+                await _context.SaveChangesAsync();
+                return true;
+            }
             return false;
         }
     }

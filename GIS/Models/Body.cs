@@ -12,5 +12,6 @@ namespace GIS.Models
         public string Status { get; set; } = "Vẫn còn tốt";
         public ICollection<DamageReport> DamageReports { get; } = new List<DamageReport>();
         public BodyMaterial BodyMaterial { get; set; } = null;
+        public ICollection<BodyRepairStatus> BodyRepairStatus { get; set; } = new List<BodyRepairStatus>();
     }
 }

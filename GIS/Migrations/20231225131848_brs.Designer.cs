@@ -3,6 +3,7 @@ using System;
 using GIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GIS.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231225131848_brs")]
+    partial class brs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,9 +157,6 @@ namespace GIS.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BodyId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -180,8 +179,6 @@ namespace GIS.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("BodyId");
 
                     b.HasIndex("DamageReportId")
                         .IsUnique();
@@ -496,12 +493,6 @@ namespace GIS.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GIS.Models.Body", "Body")
-                        .WithMany("BodyRepairStatus")
-                        .HasForeignKey("BodyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GIS.Models.DamageReport", "DamageReport")
                         .WithOne("BodyRepairStatus")
                         .HasForeignKey("GIS.Models.BodyRepairStatus", "DamageReportId")
@@ -509,8 +500,6 @@ namespace GIS.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-
-                    b.Navigation("Body");
 
                     b.Navigation("DamageReport");
                 });
@@ -582,8 +571,6 @@ namespace GIS.Migrations
                 {
                     b.Navigation("BodyMaterial")
                         .IsRequired();
-
-                    b.Navigation("BodyRepairStatus");
 
                     b.Navigation("DamageReports");
                 });

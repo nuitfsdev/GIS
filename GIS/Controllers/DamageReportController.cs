@@ -98,5 +98,19 @@ namespace GIS.Controllers
             }
             return Ok(await _damageReportService.DeleteAsync(id));
         }
+
+        [HttpPut("{id:Guid}/status/accept")]
+        public async Task<IActionResult> Put(Guid id)
+        {
+            DamageReport? damageReport = await _damageReportService.ReadByIdAsync(id);
+            if (damageReport == null)
+            {
+                return NotFound();
+            }
+
+            damageReport.Status = "Đã chấp nhận";
+
+            return Ok(await _damageReportService.UpdateAsync(damageReport));
+        }
     }
 }
