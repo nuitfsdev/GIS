@@ -34,56 +34,66 @@ namespace GIS.Controllers
         {
 
             IEnumerable<Node> nodeList = await _nodeService.ReadAllAsync(e => true);
+            IEnumerable<Face> faceList = await _faceService.ReadAllAsync(e => true);
+
             Node node = null;
             Face face = null;
-            string pathTail = "";
+            string pathFace = "";
+
             var filteredNodes = nodeList.Where(node =>
                                 node.X == 1 &&
                                 node.Y == 2 &&
                                 node.Z == 3
                             ).ToList();
+            var filteredFaces = faceList.Where(face =>
+                                face.Path == ""
+                            ).ToList();
+
             if (a.nodeData != null)
             {
                 Console.WriteLine("đã vào 1");
                 for (int i = 0; i < a.nodeData.Count; i++)
                 {
-                    pathTail = $"/{i}";
+                    pathFace = string.Concat(a.GeneralPath, $"/{i}");
                     if(a.GeneralPath != null)
                     {
-                        face = new()
+                        filteredFaces = faceList.Where(face =>
+                                face.Path == pathFace
+                            ).ToList();
+                        if(filteredFaces.Count == 0)
                         {
-                             Path = string.Concat(a.GeneralPath, pathTail)
-                        };
-                        await _faceService.CreateAsync(face);
+                            face = new()
+                            {
+                                Path = pathFace
+                            };
+                            await _faceService.CreateAsync(face);
+                        }    
                     }    
                     
                     for (int j = 0; j < a.nodeData[i].Count; j++)
                     {
                         for (int k = 0; k < a.nodeData[i][j].Count; k++)
                         {
-                            Console.WriteLine("đã vào j = ", a.nodeData[i][j][0]);
-                            for (int l = 0; l < a.nodeData[i][j][k].Count; l++)
+                            Console.WriteLine("đã vào j = ", a.nodeData[i][j][k][0]);
+                            Console.WriteLine("a = ", a.nodeData[i][j][k][0]);
+                            filteredNodes = nodeList.Where(node =>
+                                 node.X == a.nodeData[i][j][k][0] &&
+                                 node.Y == a.nodeData[i][j][k][1] &&
+                                 node.Z == a.nodeData[i][j][k][2]
+                             ).ToList();
+
+                            if (filteredNodes.Count == 0)
                             {
-                                Console.WriteLine("a = ", a.nodeData[i][j][k][0]);
-                                filteredNodes = nodeList.Where(node =>
-                                     node.X == a.nodeData[i][j][k][0] &&
-                                     node.Y == a.nodeData[i][j][k][1] &&
-                                     node.Z == a.nodeData[i][j][k][2]
-                                 ).ToList();
-
-                                if (filteredNodes.Count == 0)
+                                node = new()
                                 {
-                                    node = new()
-                                    {
-                                        X = a.nodeData[i][j][k][0],
-                                        Y = a.nodeData[i][j][k][1],
-                                        Z = a.nodeData[i][j][k][2]
-                                    };
+                                    X = a.nodeData[i][j][k][0],
+                                    Y = a.nodeData[i][j][k][1],
+                                    Z = a.nodeData[i][j][k][2]
+                                };
 
-                                    Console.WriteLine("đã vào 2");
+                                Console.WriteLine("đã vào 2");
 
-                                    await _nodeService.CreateAsync(node);
-                                }
+                                await _nodeService.CreateAsync(node);
                             }
                         }
                     }
@@ -103,9 +113,9 @@ namespace GIS.Controllers
             IEnumerable<Node> nodeList = await _nodeService.ReadAllAsync(e => true);
             IEnumerable<Face> faceList = await _faceService.ReadAllAsync(e => true);
 
-            Node node = new Node();
-            Face face = new Face();
-            string pathTail = "";
+            FaceNode faceNode = new FaceNode();
+            string pathFace = "";
+
             var filteredNodes = nodeList.Where(node =>
                                 node.X == 1 &&
                                 node.Y == 2 &&
@@ -114,47 +124,38 @@ namespace GIS.Controllers
             var filteredFaces = faceList.Where(face =>
                                 face.Path == ""
                             ).ToList();
+
             if (a.nodeData != null)
             {
                 for (int i = 0; i < a.nodeData.Count; i++)
                 {
-                    pathTail = $"/{i}";
+                    pathFace = string.Concat(a.GeneralPath, $"/{i}");
                     if (a.GeneralPath != null)
                     {
-                        face = new()
-                        {
-                            Path = string.Concat(a.GeneralPath, pathTail)
-                        };
-                        await _faceService.CreateAsync(face);
+                        filteredFaces = faceList.Where(face =>
+                                face.Path == pathFace
+                            ).ToList();
                     }
 
                     for (int j = 0; j < a.nodeData[i].Count; j++)
                     {
                         for (int k = 0; k < a.nodeData[i][j].Count; k++)
                         {
-                            Console.WriteLine("đã vào j = ", a.nodeData[i][j][0]);
-                            for (int l = 0; l < a.nodeData[i][j][k].Count; l++)
+                            filteredNodes = nodeList.Where(node =>
+                                    node.X == a.nodeData[i][j][k][0] &&
+                                    node.Y == a.nodeData[i][j][k][1] &&
+                                    node.Z == a.nodeData[i][j][k][2]
+                                ).ToList();
+
+                            if (filteredNodes.Count > 0 && filteredFaces.Count > 0)
                             {
-                                Console.WriteLine("a = ", a.nodeData[i][j][k][0]);
-                                filteredNodes = nodeList.Where(node =>
-                                     node.X == a.nodeData[i][j][k][0] &&
-                                     node.Y == a.nodeData[i][j][k][1] &&
-                                     node.Z == a.nodeData[i][j][k][2]
-                                 ).ToList();
-
-                                if (filteredNodes.Count == 0)
+                                faceNode = new()
                                 {
-                                    node = new()
-                                    {
-                                        X = a.nodeData[i][j][k][0],
-                                        Y = a.nodeData[i][j][k][1],
-                                        Z = a.nodeData[i][j][k][2]
-                                    };
+                                    FaceId = filteredFaces[0].Id,
+                                    NodeId = filteredNodes[0].Id,
+                                };
 
-                                    Console.WriteLine("đã vào 2");
-
-                                    await _nodeService.CreateAsync(node);
-                                }
+                                await _faceNodeService.CreateAsync(faceNode);
                             }
                         }
                     }
@@ -167,5 +168,17 @@ namespace GIS.Controllers
 
             return Ok("Success");
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            FaceNode? faceNode = await _faceNodeService.ReadByIdAsync(id);
+            if (faceNode == null)
+            {
+                return NotFound();
+            }
+            return Ok(await _faceNodeService.DeleteAsync(id));
+        }
+
     }
 }

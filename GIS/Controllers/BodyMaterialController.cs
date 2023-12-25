@@ -24,10 +24,11 @@ namespace GIS.Controllers
             return Ok(await _bodyMaterialService.ReadAllAsync(e => true));
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("ids")]
+        public async Task<IActionResult> Get([FromQuery]Guid bodyId, [FromQuery] Guid materialId)
         {
-            var result = await _bodyMaterialService.ReadByIdAsync(id);
+            var list = await _bodyMaterialService.ReadAllAsync(e => true);
+            var result = list.FirstOrDefault(x => x.BodyId ==  bodyId && x.MaterialId == materialId);
             if (result == null)
             {
                 return NotFound();
@@ -64,15 +65,16 @@ namespace GIS.Controllers
         }
 
         [HttpDelete]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("ids")]
+        public async Task<IActionResult> Delete([FromQuery] Guid bodyId, [FromQuery] Guid materialId)
         {
-            BodyMaterial? bodyMaterial = await _bodyMaterialService.ReadByIdAsync(id);
-            if (bodyMaterial == null)
+            var list = await _bodyMaterialService.ReadAllAsync(e => true);
+            var result = list.FirstOrDefault(x => x.BodyId == bodyId && x.MaterialId == materialId);
+            if (result == null)
             {
                 return NotFound();
             }
-            return Ok(await _bodyMaterialService.DeleteAsync(id));
+            return Ok(_bodyMaterialService.DeleteBodyMaterial(bodyId, materialId));
         }
     }
 }
