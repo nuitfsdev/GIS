@@ -1,6 +1,7 @@
 ﻿using GIS.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GIS.Database
 {
@@ -49,8 +50,10 @@ namespace GIS.Database
             modelBuilder.Entity<Body>().ToTable("Body").HasKey(x => x.Id);
             modelBuilder.Entity<BodyComp>().ToTable("BodyComp");
             modelBuilder.Entity<Prism>().ToTable("Prism");
+            modelBuilder.Entity<BodyMaterial>().Ignore(x => x.Id);
             modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Body).WithOne(x => x.BodyMaterial).HasForeignKey<BodyMaterial>(x => x.BodyId);
             modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Material).WithMany(x => x.BodyMaterial).HasForeignKey(x => x.MaterialId);
+            modelBuilder.Entity<BodyMaterial>().HasKey(x => new { x.BodyId, x.MaterialId });
             modelBuilder.Entity<Face>().HasKey(x => x.Id);
             modelBuilder.Entity<Node>().HasKey(x => x.Id);
             modelBuilder.Entity<FaceNode>().HasOne(x => x.Node).WithMany(x => x.FaceNode).HasForeignKey(x => x.NodeId);
