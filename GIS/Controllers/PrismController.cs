@@ -1,7 +1,10 @@
 ﻿using GIS.Models;
+using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
 using GIS.ViewModels.Body;
+using GIS.ViewModels.BodyComp;
 using GIS.ViewModels.FaceNode;
+using GIS.ViewModels.Prism;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GIS.Controllers
@@ -46,15 +49,37 @@ namespace GIS.Controllers
             return Ok(result);
         }
 
+        [HttpGet("listPath")]
+        public async Task<IActionResult> Get([FromQuery] string path)
+        {
+            var lstPrism = await _prismService.ReadAllAsync(e => true);
+            var filteredPrism = lstPrism.Where(x => x.Path.Contains(path));
+            List<string> paths = new List<string>();
+            foreach (var item in filteredPrism)
+            {
+                paths.Add(item.Path);
+            }
+            if (paths.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(paths);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AddPrism addPrism)
         {
+            var listPrism = await _prismService.ReadAllAsync(e => true);
+            var filteredPrism = listPrism.Where(x => x.Path == addPrism.Path);
+            if (filteredPrism.Count() > 0)
+            { return Ok("Path này đã tồn tại! Tạo mới thất bại!"); }
             Prism prism = new()
             {
                 Name = addPrism.Name,
                 Path = addPrism.Path,
                 Color = addPrism.Color,
-                Height = addPrism.Height
+                Height = addPrism.Height,
+                Material = addPrism.Material
             };
             return Ok(await _prismService.CreateAsync(prism));
         }
@@ -71,11 +96,10 @@ namespace GIS.Controllers
             return Ok(await _prismService.DeleteAsync(id));
         }
 
-        [HttpPut("path")]
-        public async Task<IActionResult> Put([FromQuery] string path, [FromBody] AddPrism updatePrism)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePrism updatePrism)
         {
-            IEnumerable<Prism> prisms = await _prismService.ReadAllAsync(e => true);
-            Prism? foundPrism = prisms.FirstOrDefault(prism => prism.Path == path);
+            Prism? foundPrism = await _prismService.ReadByIdAsync(id);
 
             if (foundPrism == null)
             {
@@ -83,10 +107,24 @@ namespace GIS.Controllers
             }
             else
             {
-                foundPrism.Name = updatePrism.Name;
-                foundPrism.Path = updatePrism.Path;
-                foundPrism.Color = updatePrism.Color;
-                foundPrism.Height = updatePrism.Height;
+                if (updatePrism.Name != "")
+                { foundPrism.Name = updatePrism.Name; }
+                if (updatePrism.Path != "")
+                { foundPrism.Path = updatePrism.Path; }
+                if (updatePrism.Color != "")
+                { foundPrism.Color = updatePrism.Color; }
+                if (updatePrism.Height != 0)
+                { foundPrism.Height = updatePrism.Height; }
+                if (updatePrism.Material != "")
+                { foundPrism.Material = updatePrism.Material; }
+
+                Console.WriteLine(updatePrism.Height);
+            }
+            var listPrism = await _prismService.ReadAllAsync(e => true);
+            var filteredPrism = listPrism.Where(x => x.Path == updatePrism.Path && x.Id != foundPrism.Id);
+            if (filteredPrism.Count() > 0)
+            {
+                return Ok("Path này đã tồn tại. Cập nhật thất bại");
             }
             return Ok(await _prismService.UpdateAsync(foundPrism));
         }
