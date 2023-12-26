@@ -153,13 +153,13 @@ namespace GIS.Controllers
                 return NotFound("This path is not exist!");
             }
 
-            var bodyMaterial = bodyMaterials.FirstOrDefault(x => x.BodyId == filteredPrisms[0].Id);
-            Material material = new Material();
-            if (bodyMaterial != null)
-            {
-                Console.WriteLine(bodyMaterial.Id);
-                material = materials.First(x => x.Id == bodyMaterial.MaterialId);
-            }             
+            //var bodyMaterial = bodyMaterials.FirstOrDefault(x => x.BodyId == filteredPrisms[0].Id);
+            //Material material = new Material();
+            //if (bodyMaterial != null)
+            //{
+            //    Console.WriteLine(bodyMaterial.Id);
+            //    material = materials.First(x => x.Id == bodyMaterial.MaterialId);
+            //}             
 
             var filteredFace = faces.Where(face =>
                                 face.Path.StartsWith(result)
@@ -178,8 +178,10 @@ namespace GIS.Controllers
             {
                 foreach (var item in nodesFaceList)
                 {
+                    Console.WriteLine("okay");
                     if (faceNode.FaceId == item.faceId)
                     {
+                        Console.WriteLine("I'mhere");
                         item.nodeIds.Add(faceNode.NodeId);
                     }
                 }
@@ -188,10 +190,11 @@ namespace GIS.Controllers
             List<List<List<List<double>>>> coordinates = new List<List<List<List<double>>>>();
             Node? node = new Node();
 
-            for (int i = 0; i < faces.Count(); i++)
+            for (int i = 0; i < filteredFace.Count(); i++)
             {
                 coordinates.Add(new List<List<List<double>>>());
                 coordinates[i].Add(new List<List<double>>());
+                Console.WriteLine(nodesFaceList[i].nodeIds.Count);
                 for (int j = 0; j < nodesFaceList[i].nodeIds.Count; j++)
                 {
                     coordinates[i][0].Add(new List<double>());
@@ -213,7 +216,7 @@ namespace GIS.Controllers
                         Path = filteredPrisms[0].Path,
                         Color = filteredPrisms[0].Color,
                         Height = filteredPrisms[0].Height,
-                        Material = material.Name,
+                        Material = filteredPrisms[0].Material,
                         Id = filteredPrisms[0].Id
                     },
                 Geometry =

@@ -46,9 +46,10 @@ namespace GIS.Controllers
                                 node.Z == 3
                             ).ToList();
             var filteredFaces = faceList.Where(face =>
-                                face.Path == ""
+                                face.Path == a.GeneralPath + "/0"
                             ).ToList();
-
+            if(filteredFaces.Count > 0)
+            { return Ok("GeneralPath này đã tồn tại! Tạo face, node thất bại!"); }    
             if (a.nodeData != null)
             {
                 Console.WriteLine("đã vào 1");
