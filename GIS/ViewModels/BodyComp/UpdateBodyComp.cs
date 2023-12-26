@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GIS.ViewModels.Body
+namespace GIS.ViewModels.BodyComp
 {
-    public class AddBodyComp
+    public class UpdateBodyComp
     {
-        [Required]
         public string Name { get; set; } = string.Empty;
-        [Required]
         public string Path { get; set; } = string.Empty;
-        [Required]
         public string Color { get; set; } = string.Empty;
-        [Required]
         public double Width { get; set; }
+        public string Material { get; set; } = string.Empty;
     }
 }

@@ -2,6 +2,7 @@
 using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
 using GIS.ViewModels.Body;
+using GIS.ViewModels.BodyComp;
 using GIS.ViewModels.FaceNode;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,15 +48,38 @@ namespace GIS.Controllers
             return Ok(result);
         }
 
+        [HttpGet("listPath")]
+        public async Task<IActionResult> Get([FromQuery]string path)
+        {
+            var lstBodyComp = await _bodyCompService.ReadAllAsync(e => true);
+            var filteredBodyComp = lstBodyComp.Where(x => x.Path.Contains(path));
+            List<string> paths = new List<string>();
+            foreach (var item in filteredBodyComp)
+            {
+                paths.Add(item.Path);
+            }
+            if (paths.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(paths);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AddBodyComp addBodyComp)
         {
+            var listBC = await _bodyCompService.ReadAllAsync(e => true);
+            var filteredBC = listBC.Where(x => x.Path == addBodyComp.Path);
+            if(filteredBC.Count() > 0)
+            { return Ok("Path này đã tồn tại! Tạo mới thất bại!"); } 
+            
             BodyComp bodyComp = new()
             {
                 Name = addBodyComp.Name,
                 Path = addBodyComp.Path,
                 Color = addBodyComp.Color,
-                Width = addBodyComp.Width
+                Width = addBodyComp.Width,
+                Material = addBodyComp.Material
             };
             return Ok(await _bodyCompService.CreateAsync(bodyComp));
         }
@@ -72,11 +96,10 @@ namespace GIS.Controllers
             return Ok(await _bodyCompService.DeleteAsync(id));
         }
 
-        [HttpPut("path")]
-        public async Task<IActionResult> Put([FromQuery] string path, [FromBody] AddBodyComp updateBodyComp)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateBodyComp updateBodyComp)
         {
-            IEnumerable<BodyComp> bodyComps = await _bodyCompService.ReadAllAsync(e => true);
-            BodyComp? foundBodyComp = bodyComps.FirstOrDefault(bodyComp => bodyComp.Path == path);
+            BodyComp? foundBodyComp = await _bodyCompService.ReadByIdAsync(id);
 
             if (foundBodyComp == null)
             {
@@ -84,10 +107,23 @@ namespace GIS.Controllers
             }
             else
             {
-                foundBodyComp.Name = updateBodyComp.Name;
-                foundBodyComp.Path = updateBodyComp.Path;
-                foundBodyComp.Color = updateBodyComp.Color;
-                foundBodyComp.Width = updateBodyComp.Width;
+                if (updateBodyComp.Name != "")
+                { foundBodyComp.Name = updateBodyComp.Name; }
+                if (updateBodyComp.Path != "")
+                { foundBodyComp.Path = updateBodyComp.Path; }
+                if (updateBodyComp.Color != "")
+                { foundBodyComp.Color = updateBodyComp.Color; }
+                if(updateBodyComp.Width != 0)
+                { foundBodyComp.Width = updateBodyComp.Width; }
+                if(updateBodyComp.Material != "")
+                { foundBodyComp.Material = updateBodyComp.Material; }
+
+            }
+            var listBC = await _bodyCompService.ReadAllAsync(e => true);
+            var filteredBC = listBC.Where(x => x.Path == updateBodyComp.Path && x.Id != foundBodyComp.Id);
+            if(filteredBC.Count() > 0)
+            {
+                return Ok("Path này đã tồn tại. Cập nhật thất bại");
             }
             return Ok(await _bodyCompService.UpdateAsync(foundBodyComp));
         }
