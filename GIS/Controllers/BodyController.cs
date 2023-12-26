@@ -28,7 +28,13 @@ namespace GIS.Controllers
             _faceService = faceService;
             _nodeService = nodeService;
             _bodyService = bodyService;
-        }       
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _bodyService.ReadAllAsync(e => true));
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AddBody addBody)
