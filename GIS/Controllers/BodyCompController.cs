@@ -152,13 +152,13 @@ namespace GIS.Controllers
                 return NotFound("This path is not exist!");
             }
 
-            var bodyMaterial = bodyMaterials.FirstOrDefault(x => x.BodyId == filteredBodyComps[0].Id);
-            Material material = new Material();
-            if (bodyMaterial != null)
-            {
-                Console.WriteLine(bodyMaterial.Id);
-                material = materials.First(x => x.Id == bodyMaterial.MaterialId);
-            }
+            //var bodyMaterial = bodyMaterials.FirstOrDefault(x => x.BodyId == filteredBodyComps[0].Id);
+            //Material material = new Material();
+            //if (bodyMaterial != null)
+            //{
+            //    Console.WriteLine(bodyMaterial.Id);
+            //    material = materials.First(x => x.Id == bodyMaterial.MaterialId);
+            //}
 
             var filteredFace = faces.Where(face =>
                                 face.Path.StartsWith(result)
@@ -187,7 +187,7 @@ namespace GIS.Controllers
             List<List<List<List<double>>>> coordinates = new List<List<List<List<double>>>>();
             Node? node = new Node();
 
-            for (int i = 0; i < faces.Count(); i++)
+            for (int i = 0; i < filteredFace.Count(); i++)
             {
                 coordinates.Add(new List<List<List<double>>>());
                 coordinates[i].Add(new List<List<double>>());
@@ -212,7 +212,7 @@ namespace GIS.Controllers
                         Path = filteredBodyComps[0].Path,
                         Color = filteredBodyComps[0].Color,
                         Width = filteredBodyComps[0].Width,
-                        Material = material.Name,
+                        Material =filteredBodyComps[0].Material,
                         Id = filteredBodyComps[0].Id
                     },
                 Geometry =
