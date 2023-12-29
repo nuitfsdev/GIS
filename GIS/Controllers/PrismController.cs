@@ -141,7 +141,7 @@ namespace GIS.Controllers
 
             int lastIndexOfExtension = path.Trim().IndexOf(".");
             Console.WriteLine(lastIndexOfExtension);
-            string result = path.Trim().Substring(0, lastIndexOfExtension);
+            string result = string.Concat(path.Trim().Substring(0, lastIndexOfExtension),"/");
             Console.WriteLine(result);
 
             var filteredPrisms = prisms.Where(prism =>
@@ -164,10 +164,17 @@ namespace GIS.Controllers
             var filteredFace = faces.Where(face =>
                                 face.Path.StartsWith(result)
                             ).ToList();
+            Console.WriteLine("filteredFace.Count()");
+            Console.WriteLine(filteredFace.Count());
+            foreach (var item in filteredFace)
+            {
+                Console.WriteLine(item.Path);
+            }
             List<FaceListNode> nodesFaceList = new List<FaceListNode>();
 
             foreach (var face in filteredFace)
             {
+                Console.WriteLine("face");
                 nodesFaceList.Add(new()
                 {
                     faceId = face.Id,
@@ -178,7 +185,6 @@ namespace GIS.Controllers
             {
                 foreach (var item in nodesFaceList)
                 {
-                    Console.WriteLine("okay");
                     if (faceNode.FaceId == item.faceId)
                     {
                         Console.WriteLine("I'mhere");
@@ -192,6 +198,7 @@ namespace GIS.Controllers
 
             for (int i = 0; i < filteredFace.Count(); i++)
             {
+                Console.WriteLine(filteredFace.Count());
                 coordinates.Add(new List<List<List<double>>>());
                 coordinates[i].Add(new List<List<double>>());
                 Console.WriteLine(nodesFaceList[i].nodeIds.Count);

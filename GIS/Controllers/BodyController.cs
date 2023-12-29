@@ -36,6 +36,14 @@ namespace GIS.Controllers
             return Ok(await _bodyService.ReadAllAsync(e => true));
         }
 
+        [HttpGet("path")]
+        public async Task<IActionResult> GetByPath([FromQuery] string path)
+        {
+            IEnumerable<Body> bodies = await _bodyService.ReadAllAsync(e => true);
+            Body body = bodies.First(x => x.Path == path);
+            return Ok(body);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AddBody addBody)
         {

@@ -1,6 +1,7 @@
 ﻿using GIS.Models;
 using GIS.Services.ImplementServices;
 using GIS.Services.InterfaceServices;
+using GIS.ViewModels.Face;
 using GIS.ViewModels.FaceNode;
 using GIS.ViewModels.Node;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,18 @@ namespace GIS.Controllers
         public async Task<IActionResult> Get()
         {
             return Ok(await _faceNodeService.ReadAllAsync(e => true));
+        }
+
+        // thêm thủ công
+        [HttpPost("one")]
+        public async Task<IActionResult> Post([FromBody] AddFaceNode addFaceNode)
+        {
+            FaceNode faceNode = new()
+            {
+                FaceId = addFaceNode.FaceId,
+                NodeId = addFaceNode.NodeId
+            };
+            return Ok(await _faceNodeService.CreateAsync(faceNode));
         }
 
         // api thêm cả face và node vào cùng một lúc
