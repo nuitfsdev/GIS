@@ -4,6 +4,7 @@ using GIS.Services.InterfaceServices;
 using GIS.ViewModels.BodyMaterial;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace GIS.Controllers
 {
@@ -12,10 +13,14 @@ namespace GIS.Controllers
     public class BodyMaterialController : ControllerBase
     {
         private readonly IBodyMaterialService _bodyMaterialService;
+        private readonly IBodyService _bodyService;
+        private readonly IMaterialService _materialService;
 
-        public BodyMaterialController(IBodyMaterialService bodyMaterialService)
+        public BodyMaterialController(IBodyMaterialService bodyMaterialService, IBodyService bodyService, IMaterialService materialService)
         {
             _bodyMaterialService = bodyMaterialService;
+            _bodyService = bodyService;
+            _materialService = materialService;
         }
 
         [HttpGet]
@@ -34,6 +39,25 @@ namespace GIS.Controllers
                 return NotFound();
             }
             return Ok(result);
+        }
+
+        [HttpPost("byNamePath")]
+        public async Task<IActionResult> Post([FromBody]string bodyPath)
+        {
+            //Guid bodyId = 
+            IEnumerable<Body> bodies = await _bodyService.ReadAllAsync(e => true);
+            Body body = bodies.First(x => x.Path == bodyPath);
+            IEnumerable<Material> materials = await _materialService.ReadAllAsync(e => true);
+            Material material = materials.First(x => x.Name == body.Material);
+
+            BodyMaterial bodyMaterial = new()
+            {
+                AgeStartTime = DateTime.UtcNow,
+                BodyId = body.Id,
+                MaterialId = material.Id
+            };
+
+            return Ok(await _bodyMaterialService.CreateAsync(bodyMaterial));
         }
 
         [HttpPost]
