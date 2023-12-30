@@ -9,30 +9,25 @@ namespace GIS.Services.ImplementServices
     public class BodyMaterialService : CRUDService<BodyMaterial>, IBodyMaterialService
     {
         private readonly DatabaseContext _context;
-        private readonly DbSet<BodyMaterial> _bodyMaterials;
-
+        private readonly DbSet<BodyMaterial> _entities;
         public BodyMaterialService(DatabaseContext context) : base(context)
         {
             _context = context;
-            _bodyMaterials = _context.Set<BodyMaterial>();
+            _entities = _context.Set<BodyMaterial>();
         }
 
-        public async Task<bool> DeleteBmBy2Id(Guid BodyId, Guid MaterialId)
+        public async Task<bool> DeleteBodyMaterial(Guid bodyId, Guid materialId)
         {
-            var bodyMaterial = await _bodyMaterials.FindAsync(BodyId, MaterialId);
-            if (bodyMaterial == null)
+            BodyMaterial bodyMaterial = await _entities.FirstAsync(x => x.BodyId == bodyId && x.MaterialId == materialId);
+            Console.WriteLine("body Id");
+            Console.WriteLine(bodyMaterial.BodyId);
+            if (bodyMaterial != null)
             {
-                return false;
+                var result = _entities.Remove(bodyMaterial);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            _bodyMaterials.Remove(bodyMaterial);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<BodyMaterial?> FindBy2Id(Guid BodyId, Guid MaterialId)
-        {
-            var bodyMaterial = await _bodyMaterials.FindAsync(BodyId, MaterialId);
-            return bodyMaterial;
+            return false;
         }
     }
 }

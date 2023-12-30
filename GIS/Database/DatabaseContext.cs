@@ -1,6 +1,7 @@
 ﻿using GIS.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GIS.Database
 {
@@ -26,6 +27,10 @@ namespace GIS.Database
         public DbSet<Notification> Notifications { get; set; } = null!;
 
         public DbSet<BodyMaterial> BodyMaterial { get; set; } = null!;
+        public DbSet<Face> Face { get; set; } = null!;
+        public DbSet<Node> Node { get; set; } = null!;
+        public DbSet<FaceNode> FaceNode { get; set; } = null!;
+        public DbSet<BodyRepairStatus> BodyRepairStatus { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -46,10 +51,18 @@ namespace GIS.Database
             modelBuilder.Entity<Body>().ToTable("Body").HasKey(x => x.Id);
             modelBuilder.Entity<BodyComp>().ToTable("BodyComp");
             modelBuilder.Entity<Prism>().ToTable("Prism");
-            modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Body).WithMany(x => x.BodyMaterial).HasForeignKey(x => x.BodyId);
+            modelBuilder.Entity<BodyMaterial>().Ignore(x => x.Id);
+            modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Body).WithOne(x => x.BodyMaterial).HasForeignKey<BodyMaterial>(x => x.BodyId);
             modelBuilder.Entity<BodyMaterial>().HasOne(x => x.Material).WithMany(x => x.BodyMaterial).HasForeignKey(x => x.MaterialId);
             modelBuilder.Entity<BodyMaterial>().HasKey(x => new { x.BodyId, x.MaterialId });
-
+            modelBuilder.Entity<Face>().HasKey(x => x.Id);
+            modelBuilder.Entity<Node>().HasKey(x => x.Id);
+            modelBuilder.Entity<FaceNode>().HasOne(x => x.Node).WithMany(x => x.FaceNode).HasForeignKey(x => x.NodeId);
+            modelBuilder.Entity<FaceNode>().HasOne(x => x.Face).WithMany(x => x.FaceNode).HasForeignKey(x => x.FaceId);
+            modelBuilder.Entity<BodyRepairStatus>().HasKey(x => x.Id);
+            modelBuilder.Entity<BodyRepairStatus>().HasOne(x => x.Account).WithMany(x => x.BodyRepairStatuses).HasForeignKey(x => x.AccountId);
+            modelBuilder.Entity<BodyRepairStatus>().HasOne(x => x.Body).WithMany(x => x.BodyRepairStatus).HasForeignKey(x => x.BodyId);
+            modelBuilder.Entity<BodyRepairStatus>().HasOne(x => x.DamageReport).WithOne(x => x.BodyRepairStatus).HasForeignKey<BodyRepairStatus>(x => x.DamageReportId);
         }
     }
 }

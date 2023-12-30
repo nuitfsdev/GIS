@@ -24,10 +24,16 @@ namespace GIS.Controllers
             return Ok(await _bodyMaterialService.ReadAllAsync(e => true));
         }
 
-        [HttpGet("findOne")]
-        public async Task<IActionResult> GetBy2Id(Guid BodyId, Guid MaterialId)
+        [HttpGet("ids")]
+        public async Task<IActionResult> Get([FromQuery]Guid bodyId, [FromQuery] Guid materialId)
         {
-            return Ok(await _bodyMaterialService.FindBy2Id(BodyId, MaterialId));
+            var list = await _bodyMaterialService.ReadAllAsync(e => true);
+            var result = list.FirstOrDefault(x => x.BodyId ==  bodyId && x.MaterialId == materialId);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         [HttpPost]
@@ -59,12 +65,25 @@ namespace GIS.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] Guid BodyId, [FromQuery] Guid MaterialId)
+        [HttpDelete("ids")]
+        public async Task<IActionResult> Delete([FromQuery] Guid bodyId, [FromQuery] Guid materialId)
         {
-            var result = await _bodyMaterialService.DeleteBmBy2Id(BodyId, MaterialId);
-            if (result == false)
+            var list = await _bodyMaterialService.ReadAllAsync(e => true);
+            var result = list.FirstOrDefault(x => x.BodyId == bodyId && x.MaterialId == materialId);
+            if (result == null)
+            {
                 return NotFound();
-            return Ok(result);
+            }
+            bool deleteResult = await _bodyMaterialService.DeleteBodyMaterial(bodyId, materialId);
+            Console.WriteLine("deleteResult");
+            Console.WriteLine(deleteResult);
+            if (deleteResult)
+            {
+                return Ok("Success");
+            }
+
+            // Xử lý trường hợp lỗi nếu cần thiết
+            return StatusCode(500, "Internal Server Error");
         }
     }
 }

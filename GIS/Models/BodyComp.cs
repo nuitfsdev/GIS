@@ -5,6 +5,6 @@ namespace GIS.Models
     public class BodyComp : Body
     {
         [Required]
-        public double width { get; set; }
+        public double Width { get; set; }
     }
 }

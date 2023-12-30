@@ -3,6 +3,7 @@ using System;
 using GIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GIS.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231224205140_bd")]
+    partial class bd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,10 +104,6 @@ namespace GIS.Migrations
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -125,14 +123,15 @@ namespace GIS.Migrations
 
             modelBuilder.Entity("GIS.Models.BodyMaterial", b =>
                 {
-                    b.Property<Guid>("BodyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("MaterialId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("AgeStartTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("BodyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -140,7 +139,10 @@ namespace GIS.Migrations
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("BodyId", "MaterialId");
+                    b.Property<Guid>("MaterialId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BodyId")
                         .IsUnique();
@@ -148,49 +150,6 @@ namespace GIS.Migrations
                     b.HasIndex("MaterialId");
 
                     b.ToTable("BodyMaterial");
-                });
-
-            modelBuilder.Entity("GIS.Models.BodyRepairStatus", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BodyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("DamageReportId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("FinishDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("RepairReason")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("BodyId");
-
-                    b.HasIndex("DamageReportId")
-                        .IsUnique();
-
-                    b.ToTable("BodyRepairStatus");
                 });
 
             modelBuilder.Entity("GIS.Models.DamageReport", b =>
@@ -492,33 +451,6 @@ namespace GIS.Migrations
                     b.Navigation("Material");
                 });
 
-            modelBuilder.Entity("GIS.Models.BodyRepairStatus", b =>
-                {
-                    b.HasOne("GIS.Models.Account", "Account")
-                        .WithMany("BodyRepairStatuses")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GIS.Models.Body", "Body")
-                        .WithMany("BodyRepairStatus")
-                        .HasForeignKey("BodyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GIS.Models.DamageReport", "DamageReport")
-                        .WithOne("BodyRepairStatus")
-                        .HasForeignKey("GIS.Models.BodyRepairStatus", "DamageReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Body");
-
-                    b.Navigation("DamageReport");
-                });
-
             modelBuilder.Entity("GIS.Models.DamageReport", b =>
                 {
                     b.HasOne("GIS.Models.Account", "Account")
@@ -577,8 +509,6 @@ namespace GIS.Migrations
 
             modelBuilder.Entity("GIS.Models.Account", b =>
                 {
-                    b.Navigation("BodyRepairStatuses");
-
                     b.Navigation("DamageReports");
                 });
 
@@ -587,15 +517,7 @@ namespace GIS.Migrations
                     b.Navigation("BodyMaterial")
                         .IsRequired();
 
-                    b.Navigation("BodyRepairStatus");
-
                     b.Navigation("DamageReports");
-                });
-
-            modelBuilder.Entity("GIS.Models.DamageReport", b =>
-                {
-                    b.Navigation("BodyRepairStatus")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("GIS.Models.Face", b =>
