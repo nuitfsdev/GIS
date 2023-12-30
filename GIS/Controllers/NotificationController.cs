@@ -18,6 +18,7 @@ namespace GIS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            Console.WriteLine("Kiểm tra và tạo thông báo");
             return Ok(await _notificationService.ReadAllAsync(e => true));
         }
 

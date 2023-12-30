@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using GIS.Services.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +88,8 @@ builder.Services.AddAuthentication( x=>
 
 ServicesInjection.Excecute(builder.Services);
 builder.Services.AddControllers();
+builder.Services.AddHostedService<DailyCheckService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
